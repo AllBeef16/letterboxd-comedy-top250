@@ -1,8 +1,7 @@
-
-name: Build Top 250 Comedy
+name: On-Demand Top 250 Comedy (Diagnostic)
 
 on:
-  workflow_dispatch: {}   # ← manual runs only
+  workflow_dispatch: {}
 
 jobs:
   run:
@@ -11,10 +10,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Show repo structure
+        run: |
+          echo "== Repo root =="
+          ls -la
+          echo "== Workflow file =="
+          ls -la .github/workflows || true
+
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Install git (just in case)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git
 
       - name: Install dependencies
         run: |
@@ -22,10 +33,23 @@ jobs:
           pip install -r requirements.txt
           pip install git+https://github.com/L-Dot/Letterboxd-list-scraper.git
 
-      - name: Generate Top 250
-        run: python scrape_and_rank.py
+      - name: Sanity check Python packages
+        run: |
+          python -c "import bs4, lxml, numpy, requests; print('Packages OK')"
+
+      - name: Run scraper script
+        run: |
+          python scrape_and_rank.py
+
+      - name: List scraper outputs
+        run: |
+          echo "== scraper_outputs dir =="
+          ls -la scraper_outputs || echo "scraper_outputs not found"
+          echo "== Generated files =="
+          ls -la top250_comedy.csv top250_comedy.json || true
 
       - name: Upload results
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: top250-comedy
