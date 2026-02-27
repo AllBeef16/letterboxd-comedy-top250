@@ -1,0 +1,35 @@
+name: Build Top 250 Comedy
+
+on:
+  schedule:
+    - cron: "0 7 */14 * *"
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install git+https://github.com/L-Dot/Letterboxd-list-scraper.git
+
+      - name: Generate Top 250
+        run: python scrape_and_rank.py
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: top250-comedy
+          path: |
+            top250_comedy.csv
+            top250_comedy.json
