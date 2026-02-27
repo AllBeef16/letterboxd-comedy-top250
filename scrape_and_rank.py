@@ -5,7 +5,7 @@ import csv, json, re, subprocess, sys, pathlib
 
 # ------------- CONFIG: Put your Letterboxd Comedy browse URLs here -------------
 SRC_LIST_URLS = [
-    "https://letterboxd.com/films/popular/genre/comedy+-documentary/"  # e.g., https://letterboxd.com/films/genre/comedy/
+    "https://letterboxd.com/films/genre/comedy+-documentary/by/rating/"  # e.g., https://letterboxd.com/films/genre/comedy/
     # You can add more URLs if you like, one per line.
 ]
 
