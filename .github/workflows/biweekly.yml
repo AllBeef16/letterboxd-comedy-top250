@@ -30,6 +30,22 @@ jobs:
         run: |
           python scrape_and_rank.py
 
+      
+      - name: Peek scraper outputs (headers & first lines)
+        run: |
+          echo "== Files in Letterboxd-list-scraper/scraper_outputs =="
+          ls -la Letterboxd-list-scraper/scraper_outputs || true
+
+          echo "== Preview of first CSV (if any) =="
+          first_csv=$(ls Letterboxd-list-scraper/scraper_outputs/*.csv 2>/dev/null | head -n 1)
+          if [ -z "$first_csv" ]; then
+            echo "No CSV files found in scraper_outputs."
+          else
+            echo "Showing first 20 lines of: $first_csv"
+            head -n 20 "$first_csv"
+          fi
+
+
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
